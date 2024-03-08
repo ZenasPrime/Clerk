@@ -42,6 +42,28 @@ namespace ZenTools.Clerk
         }
         
         /// <summary>
+        /// Reads a JSON file from the Unity Resources folder and deserializes its content into an object of type T.
+        /// This method is useful for accessing JSON files included in the project's Resources directory,
+        /// allowing for easier asset bundling and deployment.
+        /// </summary>
+        /// <typeparam name="T">The type of object to deserialize the JSON content into.</typeparam>
+        /// <param name="filePath">The relative path within the Resources folder to the JSON file, without the file extension.</param>
+        /// <returns>The deserialized object of type T.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if the JSON file is not found within the Resources folder at the specified filePath.</exception>
+        public static T ReadFromJsonFileInResources<T>(string filePath)
+        {
+            TextAsset jsonFile = Resources.Load<TextAsset>(filePath);
+            if (jsonFile != null)
+            {
+                return JsonUtility.FromJson<T>(jsonFile.text);
+            }
+            else
+            {
+                throw new FileNotFoundException("JSON file not found at " + filePath);
+            }
+        }
+        
+        /// <summary>
         /// Attempts to read from a JSON file and deserialize its content into an object of type T.
         /// </summary>
         /// <typeparam name="T">The type of object to deserialize to.</typeparam>

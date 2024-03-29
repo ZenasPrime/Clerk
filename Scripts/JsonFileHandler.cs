@@ -22,6 +22,13 @@ namespace ZenTools.Clerk
             File.WriteAllText(filePath, json);
         }
         
+        public static void WriteToJsonFileInResources<T>(string filePath, T data)
+        {
+            string json = JsonUtility.ToJson(data, true);
+            string fullPath = Application.dataPath + "/Resources/" + filePath + ".json";
+            File.WriteAllText(fullPath, json);
+        }
+        
         /// <summary>
         // /// Reads a JSON file and deserializes its content into an object of type T.
         // /// </summary>

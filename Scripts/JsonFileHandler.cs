@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using UnityEngine;
 
@@ -22,11 +21,40 @@ namespace ZenTools.Clerk
             File.WriteAllText(filePath, json);
         }
         
+        /// <summary>
+        /// Writes an object of type T to a JSON file within the Unity Resources folder.
+        /// This makes it possible to bundle the JSON file with your project's assets.
+        /// </summary>
+        /// <typeparam name="T">The type of object to serialize and write.</typeparam>
+        /// <param name="filePath">The relative file path within the Resources folder, excluding the '.json' extension.</param>
+        /// <param name="data">The object to serialize to JSON.</param>
         public static void WriteToJsonFileInResources<T>(string filePath, T data)
         {
             string json = JsonUtility.ToJson(data, true);
             string fullPath = Application.dataPath + "/Resources/" + filePath + ".json";
             File.WriteAllText(fullPath, json);
+        }
+        
+        /// <summary>
+        /// Tries to serialize an object of type T to JSON and write it to the specified file path, handling any exceptions.
+        /// </summary>
+        /// <typeparam name="T">The type of object to serialize.</typeparam>
+        /// <param name="filePath">The file path where the JSON should be saved.</param>
+        /// <param name="data">The object to serialize to JSON.</param>
+        /// <returns>True if the file was successfully written; otherwise, false.</returns>
+        public static bool TryWriteToJsonFile<T>(string filePath, T data)
+        {
+            try
+            {
+                string json = JsonUtility.ToJson(data, true);
+                File.WriteAllText(filePath, json);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to write JSON file at {filePath}: {e.Message}");
+                return false;
+            }
         }
         
         /// <summary>
@@ -79,14 +107,15 @@ namespace ZenTools.Clerk
         /// <returns>True if the file is successfully read and deserialized; otherwise, false.</returns>
         public static bool TryReadFromJsonFile<T>(string filePath, out T data)
         {
-            if (File.Exists(filePath))
+            try
             {
                 string jsonData = File.ReadAllText(filePath);
                 data = JsonUtility.FromJson<T>(jsonData);
                 return true;
             }
-            else
+            catch (FileNotFoundException)
             {
+                Debug.LogWarning($"File does not exist at {filePath}. Returning default value for type {typeof(T)}.");
                 data = default(T);
                 return false;
             }

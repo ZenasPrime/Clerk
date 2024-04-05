@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace ZenTools.Clerk
 {
@@ -17,7 +18,7 @@ namespace ZenTools.Clerk
         // /// <param name="data">The object to serialize to JSON.</param>
         public static void WriteToJsonFile<T>(string filePath, T data)
         {
-            string json = JsonUtility.ToJson(data, true);
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
             File.WriteAllText(filePath, json);
         }
         
@@ -30,7 +31,7 @@ namespace ZenTools.Clerk
         /// <param name="data">The object to serialize to JSON.</param>
         public static void WriteToJsonFileInResources<T>(string filePath, T data)
         {
-            string json = JsonUtility.ToJson(data, true);
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
             string fullPath = Application.dataPath + "/Resources/" + filePath + ".json";
             File.WriteAllText(fullPath, json);
         }
@@ -46,7 +47,7 @@ namespace ZenTools.Clerk
         {
             try
             {
-                string json = JsonUtility.ToJson(data, true);
+                string json = JsonConvert.SerializeObject(data, Formatting.Indented);
                 File.WriteAllText(filePath, json);
                 return true;
             }
@@ -68,7 +69,7 @@ namespace ZenTools.Clerk
             if (File.Exists(filePath))
             {
                 string jsonData = File.ReadAllText(filePath);
-                return JsonUtility.FromJson<T>(jsonData);
+                return JsonConvert.DeserializeObject<T>(jsonData);
             }
             else
             {
@@ -90,7 +91,7 @@ namespace ZenTools.Clerk
             TextAsset jsonFile = Resources.Load<TextAsset>(filePath);
             if (jsonFile != null)
             {
-                return JsonUtility.FromJson<T>(jsonFile.text);
+                return JsonConvert.DeserializeObject<T>(jsonFile.text);
             }
             else
             {
@@ -110,7 +111,7 @@ namespace ZenTools.Clerk
             try
             {
                 string jsonData = File.ReadAllText(filePath);
-                data = JsonUtility.FromJson<T>(jsonData);
+                data = JsonConvert.DeserializeObject<T>(jsonData);
                 return true;
             }
             catch (FileNotFoundException)

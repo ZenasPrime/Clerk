@@ -1,6 +1,6 @@
 {
 	"name": "com.zenasprime.clerk",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"displayName": "Clerk",
 	"description": "Provides static methods for writing to and reading from JSON files.",
 	"unity": "2022.3",
